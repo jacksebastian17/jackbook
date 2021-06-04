@@ -23,4 +23,4 @@ class UserUpdateForm(forms.ModelForm): # form to allow user to update username a
 class ProfileUpdateForm(forms.ModelForm): # form to allow user to update profile picture
     class Meta:
         model = Profile
-        field = ['image']
+        fields = ['image']
