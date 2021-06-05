@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
 
 """
@@ -48,7 +48,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'content']
 
@@ -56,8 +56,24 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-     
+    
+    def test_func(self):
+        post = self.get_object() # obtain info from post
+        if self.request.user == post.author: # only the author of post can make updates
+            return True
+        return False
 
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+
+    def test_func(self):
+        post = self.get_object() # obtain info from post
+        if self.request.user == post.author: # only the author of post can make updates
+            return True
+        return False
+
+     
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
 
