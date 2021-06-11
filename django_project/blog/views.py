@@ -32,6 +32,15 @@ class PostListView(ListView):
     template_name = 'blog/home.html' # <app>/<modal>_<viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    paginate_by = 10
+
+
+class UserListView(ListView):
+    model = Post
+    template_name = 'blog/user_posts.html' # <app>/<modal>_<viewtype>.html
+    context_object_name = 'posts'
+    ordering = ['-date_posted']
+    paginate_by = 10
 
 
 class PostDetailView(DetailView):
